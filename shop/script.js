@@ -233,6 +233,58 @@ function renderData(obj, box) {
 }
 
 
+function addToCartListener(){
+  addToCartBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        try {
+          loading.style.display = 'flex';
+          console.log(e.target);
+          let cartItems = new Set();
+          let text = e.target.parentElement.innerHTML
+          cartItems.add(text.substring(25, 28));
+          if (!localStorage.getItem('users')) {
+            alert('Login to add/access cart.');
+            return;
+          }
+          else {
+            let flag = false;
+            let Allusers = JSON.parse(localStorage.getItem('users'));
+            Allusers.forEach((userObj) => {
+              if (userObj.currentUser) {
+                flag = true;
+                if (userObj.cart) {
+                  let prev = userObj.cart;
+                  let updated = [...prev, ...cartItems];
+                  userObj.cart = updated;
+                  // localStorage.setItem('users', JSON.stringify(userObj));
+                } else {
+                  userObj.cart = [...cartItems];
+                }
+              }
+              // console.log(userObj);
+            })
+            localStorage.setItem('users', JSON.stringify(Allusers));
+
+            if (!flag) {
+              alert('Login to add/access cart.');
+              return;
+            }
+          }
+          btn.innerHTML = 'Added';
+          setTimeout(() => {
+            btn.innerHTML = 'Add to cart';
+          }, 2500)
+          loading.style.display = 'none';
+        }
+        catch (err) {
+          alert('Something went wrong! \n ' + err);
+        }
+        loading.style.display = 'none';
+      })
+    })
+}
+
+
 
 fetchProducts().then((data) => {
   loading.style.display = 'flex';
@@ -647,56 +699,7 @@ fetchProducts().then((data) => {
         anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
       }
     }
-    
-    addToCartBtns.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        try {
-          loading.style.display = 'flex';
-          console.log(e.target);
-          let cartItems = new Set();
-          let text = e.target.parentElement.innerHTML
-          cartItems.add(text.substring(25, 28));
-          if (!localStorage.getItem('users')) {
-            alert('Login to add/access cart.');
-            return;
-          }
-          else {
-            let flag = false;
-            let Allusers = JSON.parse(localStorage.getItem('users'));
-            Allusers.forEach((userObj) => {
-              if (userObj.currentUser) {
-                flag = true;
-                if (userObj.cart) {
-                  let prev = userObj.cart;
-                  let updated = [...prev, ...cartItems];
-                  userObj.cart = updated;
-                  // localStorage.setItem('users', JSON.stringify(userObj));
-                } else {
-                  userObj.cart = [...cartItems];
-                }
-              }
-              // console.log(userObj);
-            })
-            localStorage.setItem('users', JSON.stringify(Allusers));
-
-            if (!flag) {
-              alert('Login to add/access cart.');
-              return;
-            }
-          }
-          btn.innerHTML = 'Added';
-          setTimeout(() => {
-            btn.innerHTML = 'Add to cart';
-          }, 2500)
-          loading.style.display = 'none';
-        }
-        catch (err) {
-          alert('Something went wrong! \n ' + err);
-        }
-        loading.style.display = 'none';
-      })
-    })
-
+    addToCartListener();
     
   })
 
@@ -725,55 +728,9 @@ fetchProducts().then((data) => {
     anybox.style.display = 'none';
     loading.style.display = 'none';
   })
-
-  addToCartBtns.forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      try {
-        loading.style.display = 'flex';
-        console.log(e.target);
-        let cartItems = new Set();
-        let text = e.target.parentElement.innerHTML
-        cartItems.add(text.substring(25, 28));
-        if (!localStorage.getItem('users')) {
-          alert('Login to add/access cart.');
-          return;
-        }
-        else {
-          let flag = false;
-          let Allusers = JSON.parse(localStorage.getItem('users'));
-          Allusers.forEach((userObj) => {
-            if (userObj.currentUser) {
-              flag = true;
-              if (userObj.cart) {
-                let prev = userObj.cart;
-                let updated = [...prev, ...cartItems];
-                userObj.cart = updated;
-                // localStorage.setItem('users', JSON.stringify(userObj));
-              } else {
-                userObj.cart = [...cartItems];
-              }
-            }
-            // console.log(userObj);
-          })
-          localStorage.setItem('users', JSON.stringify(Allusers));
-
-          if (!flag) {
-            alert('Login to add/access cart.');
-            return;
-          }
-        }
-        btn.innerHTML = 'Added';
-        setTimeout(() => {
-          btn.innerHTML = 'Add to cart';
-        }, 2500)
-        loading.style.display = 'none';
-      }
-      catch (err) {
-        alert('Something went wrong! \n ' + err);
-      }
-      loading.style.display = 'none';
-    })
-  })
+  
+  // general add-to-cart event listener
+  addToCartListener();
 
   searchInput.addEventListener('keyup', (e) => {
     // console.log(e.target);
@@ -827,54 +784,7 @@ fetchProducts().then((data) => {
     if (!found || searchInput.value == '') {
       anybox.innerHTML = '<h1 style="color:grey; font-size:2.5rem">Opps! No products found!!</h1>'
     }
-    addToCartBtns.forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        try {
-          loading.style.display = 'flex';
-          console.log(e.target);
-          let cartItems = new Set();
-          let text = e.target.parentElement.innerHTML
-          cartItems.add(text.substring(25, 28));
-          if (!localStorage.getItem('users')) {
-            alert('Login to add/access cart.');
-            return;
-          }
-          else {
-            let flag = false;
-            let Allusers = JSON.parse(localStorage.getItem('users'));
-            Allusers.forEach((userObj) => {
-              if (userObj.currentUser) {
-                flag = true;
-                if (userObj.cart) {
-                  let prev = userObj.cart;
-                  let updated = [...prev, ...cartItems];
-                  userObj.cart = updated;
-                  // localStorage.setItem('users', JSON.stringify(userObj));
-                } else {
-                  userObj.cart = [...cartItems];
-                }
-              }
-              // console.log(userObj);
-            })
-            localStorage.setItem('users', JSON.stringify(Allusers));
-
-            if (!flag) {
-              alert('Login to add/access cart.');
-              return;
-            }
-          }
-          btn.innerHTML = 'Added';
-          setTimeout(() => {
-            btn.innerHTML = 'Add to cart';
-          }, 2500)
-          loading.style.display = 'none';
-        }
-        catch (err) {
-          alert('Something went wrong! \n ' + err);
-        }
-        loading.style.display = 'none';
-      })
-    })
+    addToCartListener();
     searchInput.value = '';
     loading.style.display = 'none';
   })
