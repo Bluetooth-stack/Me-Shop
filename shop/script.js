@@ -733,6 +733,7 @@ fetchProducts().then((data) => {
     checkedColor = [];
     checkedsize = [];
     checkedprice = undefined;
+    checkedrate = undefined;
     const sect = document.querySelectorAll('.section');
     for (let j = 0; j < sect.length; j++) {
       sect[j].style.display = 'block';
