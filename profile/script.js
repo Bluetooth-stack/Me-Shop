@@ -60,7 +60,6 @@ save.addEventListener('click', (e) => {
 })
 
 changePass.addEventListener('click', (e) => {
-    loading.style.display = 'flex';
     console.log(e.target);
     e.preventDefault();
     errorChange.style.color = 'red';
@@ -68,7 +67,6 @@ changePass.addEventListener('click', (e) => {
     let flag = true;
     if(oldPass.value=='' || newPass.value=='' || confirmPass.value==''){
         errorChange.innerHTML = 'All fields are mandetory!'
-        loading.style.display = 'none';
         return;
     }
     if (localStorage.getItem('users')) {
@@ -80,7 +78,6 @@ changePass.addEventListener('click', (e) => {
                         flag = false;
                         newPass.focus();
                         errorChange.innerHTML = 'Passwords length must be greater than 8!';
-                        loading.style.display = 'none';
                         return;
                     }
                     if (newPass.value !== confirmPass.value) {
@@ -100,7 +97,6 @@ changePass.addEventListener('click', (e) => {
                     flag = false;
                     oldPass.focus();
                     errorChange.innerHTML = 'Old_Password does not match!';
-                    loading.style.display = 'none';
                     return;
                 }
             }
