@@ -34,7 +34,6 @@ function categoryFilter(data) {
   for (let i = 0; i < filterByCategory.length; i++) {
     let btn = filterByCategory[i];
     btn.addEventListener('click', (e) => {
-      e.stopPropagation();
       console.log(e.target);
 
       for (let j = 0; j < filterByCategory.length; j++) {
@@ -64,38 +63,38 @@ function categoryFilter(data) {
           if (obj.category == "men's clothing")
             renderData(obj, anybox);
         })
-        // return;
+        return;
       }
 
-      else if (btn.innerHTML == 'Womens') {
+      if (btn.innerHTML == 'Womens') {
         anybox.innerHTML = '';
         data.forEach((obj) => {
           if (obj.category == "women's clothing")
             renderData(obj, anybox);
         })
-        // return;
+        return;
       }
 
-      else if (btn.innerHTML == 'Jewellery') {
+      if (btn.innerHTML == 'Jewellery') {
         anybox.innerHTML = '';
         data.forEach((obj) => {
           if (obj.category == "jewelery")
             renderData(obj, anybox);
         })
-        // return;
+        return;
       }
 
-      else if (btn.innerHTML == 'Electronics') {
+      if (btn.innerHTML == 'Electronics') {
         anybox.innerHTML = '';
         data.forEach((obj) => {
           if (obj.category == "electronics")
             renderData(obj, anybox);
         })
-        // return;
+        return;
       }
+
     })
   }
-  
 }
 
 
@@ -234,10 +233,424 @@ function renderData(obj, box) {
 }
 
 
-function addToCartListener(){
-  addToCartBtns.forEach((btn) => {
+
+fetchProducts().then((data) => {
+  loading.style.display = 'flex';
+  generateSectionWiseData(data);
+  categoryFilter(data);
+  loading.style.display = 'none';
+  console.log(data);
+  for (let i = 0; i < colorFilter.length; i++) {
+    colorFilter[i].addEventListener('change', (e) => {
+      console.log(e.target);
+      if (e.target.checked) {
+        checkedColor.push(e.target.value);
+      }
+      else if (!e.target.checked) {
+        checkedColor = checkedColor.filter(c => c !== e.target.value);
+      }
+      console.log(checkedColor);
+    })
+  }
+
+  for (let i = 0; i < sizeFilter.length; i++) {
+    sizeFilter[i].addEventListener('change', (e) => {
+      console.log(e.target);
+      if (e.target.checked) {
+        checkedsize.push(e.target.value);
+      }
+      else if (!e.target.checked) {
+        checkedsize = checkedsize.filter(s => s !== e.target.value);
+      }
+      console.log(checkedsize);
+    })
+  }
+
+  for (let i = 0; i < priceFilter.length; i++) {
+    priceFilter[i].addEventListener('change', (e) => {
+      console.log(e.target);
+      if (e.target.checked) {
+        checkedprice = e.target.value;
+      }
+      console.log(checkedprice);
+    })
+  }
+
+  rateFilter.addEventListener('change', (e) => {
+    console.log(e.target);
+    if (rateFilter.value > 0) {
+      checkedrate = rateFilter.value
+    }
+    else {
+      checkedrate = undefined;
+    }
+    console.log(checkedrate);
+  })
+
+
+  applyFilter.addEventListener('click', (e) => {
+    loading.style.display = 'flex';
+    console.log(e.target);
+
+    if (!checkedColor.length && !checkedsize.length && !checkedprice && !checkedrate) {
+      loading.style.display = 'none';
+      alert('Select the filters!')
+      return;
+    }
+    if (!checkedColor.length && !checkedsize.length && !checkedprice && !checkedrate) {
+      const sect = document.querySelectorAll('.section');
+      for (let j = 0; j < sect.length; j++) {
+        sect[j].style.display = 'block';
+      }
+      anybox.style.display = 'none';
+    }
+    else {
+      const sect = document.querySelectorAll('.section');
+      for (let j = 0; j < sect.length; j++) {
+        sect[j].style.display = 'none';
+      }
+      anybox.style.display = 'flex';
+    }
+
+    anybox.innerHTML = ''
+
+    if (checkedsize.length && checkedColor.length && checkedprice && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.sizes && obj.colors) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          if (foundS && foundC) {
+            let numRate = parseInt(obj.rating.rate);
+            let priceRange = (obj.pRange === checkedprice);
+            return (priceRange && (numRate == checkedrate))
+          }
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedsize.length && checkedColor.length && checkedprice) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.sizes && obj.colors) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          if (foundS && foundC) {
+            let priceRange = (obj.pRange === checkedprice);
+            console.log(priceRange);
+            return priceRange;
+          }
+        }
+      })
+
+      // console.log(filtered);
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+
+    if (checkedsize.length && checkedColor.length && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.sizes && obj.colors) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          if (foundS && foundC) {
+            let numRate = parseInt(obj.rating.rate);
+            return (numRate == checkedrate);
+          }
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedsize.length && checkedprice && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.sizes) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let priceRange = (obj.pRange == checkedprice)
+          if (foundS && priceRange) {
+            let numRate = parseInt(obj.rating.rate);
+            return (numRate == checkedrate);
+          }
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedColor.length && checkedprice && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.colors) {
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          let priceRange = (obj.pRange == checkedprice);
+          if (foundC && priceRange) {
+            let numRate = parseInt(obj.rating.rate);
+            return (numRate == checkedrate);
+          }
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedsize.length && checkedColor.length) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = ''
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.sizes && obj.colors) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          return (foundS && foundC);
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+      // console.log(filtered);
+    }
+
+
+    if (checkedColor.length && checkedprice) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.colors) {
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          let priceRange = (obj.pRange === checkedprice);
+          return (foundC && priceRange)
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedsize.length && checkedprice) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.size) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let priceRange = (obj.pRange === checkedprice);
+          return (foundS && priceRange)
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedprice && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        let priceRange = (obj.pRange == checkedprice);
+        let numRate = parseInt(obj.rating.rate);
+        return (priceRange && (numRate == checkedrate))
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedsize.length && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.sizes) {
+          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
+          let numRate = parseInt(obj.rating.rate);
+          return (foundS && (numRate == checkedrate))
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+      loading.style.display = 'none';
+      return;
+    }
+
+    if (checkedColor.length && checkedrate) {
+      loading.style.display = 'flex';
+      anybox.innerHTML = '';
+      let filtered = [];
+      filtered = data.filter(obj => {
+        if (obj.colors) {
+          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
+          let numRate = parseInt(obj.rating.rate);
+          return (foundC && (numRate == checkedrate))
+        }
+      })
+
+      filtered.forEach(obj => {
+        renderData(obj, anybox);
+      })
+
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+    }
+
+    else {
+      anybox.innerHTML = ''
+      if (checkedColor.length) {
+        loading.style.display = 'flex';
+        // anybox.innerHTML = ''
+        data.forEach(obj => {
+          if (obj.colors) {
+            let found = obj.colors.some((clr) => checkedColor.includes(clr));
+            if (found) {
+              renderData(obj, anybox)
+            }
+          }
+        })
+        loading.style.display = 'none';
+      }
+
+      else if (checkedsize.length) {
+        loading.style.display = 'flex';
+        data.forEach(obj => {
+          if (obj.sizes) {
+            let found = obj.sizes.some((siz) => checkedsize.includes(siz));
+            if (found) {
+              renderData(obj, anybox)
+            }
+          }
+        })
+        loading.style.display = 'none';
+      }
+
+      else if (checkedprice) {
+        loading.style.display = 'flex';
+        data.forEach(obj => {
+          if ((obj.pRange === checkedprice)) {
+            renderData(obj, anybox)
+          }
+        })
+        loading.style.display = 'none';
+      }
+
+      else if (checkedrate) {
+        loading.style.display = 'flex';
+        data.forEach(obj => {
+          let numRate = parseInt(obj.rating.rate);
+          if (numRate == checkedrate) {
+            renderData(obj, anybox)
+          }
+        })
+        loading.style.display = 'none';
+      }
+      if (anybox.innerHTML == '') {
+        loading.style.display = 'none';
+        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+      }
+    }
+    
+    addToCartBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
-        e.stopPropagation();
         try {
           loading.style.display = 'flex';
           console.log(e.target);
@@ -284,470 +697,12 @@ function addToCartListener(){
         loading.style.display = 'none';
       })
     })
-}
 
-
-
-fetchProducts().then((data) => {
-  loading.style.display = 'flex';
-  generateSectionWiseData(data);
-  categoryFilter(data);
-  // general add-to-cart event listener
-  addToCartListener();
-  loading.style.display = 'none';
-  console.log(data);
-  for (let i = 0; i < colorFilter.length; i++) {
-    colorFilter[i].addEventListener('change', (e) => {
-      e.stopPropagation();
-      console.log(e.target);
-      if (e.target.checked) {
-        checkedColor.push(e.target.value);
-      }
-      else if (!e.target.checked) {
-        checkedColor = checkedColor.filter(c => c !== e.target.value);
-      }
-      console.log(checkedColor);
-    })
-  }
-
-  for (let i = 0; i < sizeFilter.length; i++) {
-    sizeFilter[i].addEventListener('change', (e) => {
-      e.stopPropagation();
-      console.log(e.target);
-      if (e.target.checked) {
-        checkedsize.push(e.target.value);
-      }
-      else if (!e.target.checked) {
-        checkedsize = checkedsize.filter(s => s !== e.target.value);
-      }
-      console.log(checkedsize);
-    })
-  }
-
-  for (let i = 0; i < priceFilter.length; i++) {
-    priceFilter[i].addEventListener('change', (e) => {
-      e.stopPropagation();
-      console.log(e.target);
-      if (e.target.checked) {
-        checkedprice = e.target.value;
-      }
-      console.log(checkedprice);
-    })
-  }
-
-  rateFilter.addEventListener('change', (e) => {
-    e.stopPropagation();
-    console.log(e.target);
-    if (rateFilter.value > 0) {
-      checkedrate = rateFilter.value
-    }
-    else {
-      checkedrate = undefined;
-    }
-    console.log(checkedrate);
-  })
-
-//filters
-  applyFilter.addEventListener('click', (e) => {
-    e.stopPropagation();
-    loading.style.display = 'flex';
-    console.log(e.target);
-
-    if (!checkedColor.length && !checkedsize.length && !checkedprice && !checkedrate) {
-      alert('Select the filters!');
-      loading.style.display = 'none';
-      return;
-    }
-    if (!checkedColor.length && !checkedsize.length && !checkedprice && !checkedrate) {
-      const sect = document.querySelectorAll('.section');
-      for (let j = 0; j < sect.length; j++) {
-        sect[j].style.display = 'block';
-      }
-      anybox.style.display = 'none';
-    }
-    else {
-      const sect = document.querySelectorAll('.section');
-      for (let j = 0; j < sect.length; j++) {
-        sect[j].style.display = 'none';
-      }
-      anybox.style.display = 'flex';
-    }
-
-    anybox.innerHTML = ''
-
-    if (checkedsize.length && checkedColor.length && checkedprice && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.sizes && obj.colors) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          if (foundS && foundC) {
-            let numRate = parseInt(obj.rating.rate);
-            let priceRange = (obj.pRange === checkedprice);
-            return (priceRange && (numRate == checkedrate))
-          }
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener();
-      return;
-    }
-
-    if (checkedsize.length && checkedColor.length && checkedprice) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.sizes && obj.colors) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          if (foundS && foundC) {
-            let priceRange = (obj.pRange === checkedprice);
-            console.log(priceRange);
-            return priceRange;
-          }
-        }
-      })
-
-      // console.log(filtered);
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-
-    if (checkedsize.length && checkedColor.length && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.sizes && obj.colors) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          if (foundS && foundC) {
-            let numRate = parseInt(obj.rating.rate);
-            return (numRate == checkedrate);
-          }
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedsize.length && checkedprice && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.sizes) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let priceRange = (obj.pRange == checkedprice)
-          if (foundS && priceRange) {
-            let numRate = parseInt(obj.rating.rate);
-            return (numRate == checkedrate);
-          }
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedColor.length && checkedprice && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.colors) {
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          let priceRange = (obj.pRange == checkedprice);
-          if (foundC && priceRange) {
-            let numRate = parseInt(obj.rating.rate);
-            return (numRate == checkedrate);
-          }
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedsize.length && checkedColor.length) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = ''
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.sizes && obj.colors) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          return (foundS && foundC);
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-      // console.log(filtered);
-    }
-
-
-    if (checkedColor.length && checkedprice) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.colors) {
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          let priceRange = (obj.pRange === checkedprice);
-          return (foundC && priceRange)
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedsize.length && checkedprice) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.size) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let priceRange = (obj.pRange === checkedprice);
-          return (foundS && priceRange)
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedprice && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        let priceRange = (obj.pRange == checkedprice);
-        let numRate = parseInt(obj.rating.rate);
-        return (priceRange && (numRate == checkedrate))
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedsize.length && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.sizes) {
-          let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
-          let numRate = parseInt(obj.rating.rate);
-          return (foundS && (numRate == checkedrate))
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      loading.style.display = 'none';
-      addToCartListener()
-      return;
-    }
-
-    if (checkedColor.length && checkedrate) {
-      loading.style.display = 'flex';
-      anybox.innerHTML = '';
-      let filtered = [];
-      filtered = data.filter(obj => {
-        if (obj.colors) {
-          let foundC = obj.colors.some((clr) => checkedColor.includes(clr));
-          let numRate = parseInt(obj.rating.rate);
-          return (foundC && (numRate == checkedrate))
-        }
-      })
-
-      filtered.forEach(obj => {
-        renderData(obj, anybox);
-      })
-
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      addToCartListener()
-      return;
-    }
-
-//     else {
-      anybox.innerHTML = ''
-      if (checkedColor.length) {
-        loading.style.display = 'flex';
-        // anybox.innerHTML = ''
-        data.forEach(obj => {
-          if (obj.colors) {
-            let found = obj.colors.some((clr) => checkedColor.includes(clr));
-            if (found) {
-              renderData(obj, anybox)
-            }
-          }
-        })
-         if (anybox.innerHTML == '') {
-           loading.style.display = 'none';
-           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-        }
-        addToCartListener()
-        loading.style.display = 'none';
-        return;
-      }
-
-      if (checkedsize.length) {
-        loading.style.display = 'flex';
-        data.forEach(obj => {
-          if (obj.sizes) {
-            let found = obj.sizes.some((siz) => checkedsize.includes(siz));
-            if (found) {
-              renderData(obj, anybox)
-            }
-          }
-        })
-        if (anybox.innerHTML == '') {
-           loading.style.display = 'none';
-           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-        }
-        addToCartListener()
-        loading.style.display = 'none';
-        return;
-      }
-
-      if (checkedprice) {
-        loading.style.display = 'flex';
-        data.forEach(obj => {
-          if ((obj.pRange === checkedprice)) {
-            renderData(obj, anybox)
-          }
-        })
-         if (anybox.innerHTML == '') {
-           loading.style.display = 'none';
-           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-        }
-        addToCartListener()
-        loading.style.display = 'none';
-        return;
-      }
-
-      if (checkedrate) {
-        loading.style.display = 'flex';
-        data.forEach(obj => {
-          let numRate = parseInt(obj.rating.rate);
-          if (numRate == checkedrate) {
-            renderData(obj, anybox)
-          }
-        })
-        if (anybox.innerHTML == '') {
-           loading.style.display = 'none';
-           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-        }
-        addToCartListener()
-        loading.style.display = 'none';
-        return;
-      }
     
-//     }
-
   })
 
 
   clearFilterBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
     console.log(e.target);
     loading.style.display = 'flex';
     const allcheck = document.querySelectorAll('main aside input[type="checkbox"]');
@@ -773,8 +728,56 @@ fetchProducts().then((data) => {
     loading.style.display = 'none';
   })
 
+  addToCartBtns.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      try {
+        loading.style.display = 'flex';
+        console.log(e.target);
+        let cartItems = new Set();
+        let text = e.target.parentElement.innerHTML
+        cartItems.add(text.substring(25, 28));
+        if (!localStorage.getItem('users')) {
+          alert('Login to add/access cart.');
+          return;
+        }
+        else {
+          let flag = false;
+          let Allusers = JSON.parse(localStorage.getItem('users'));
+          Allusers.forEach((userObj) => {
+            if (userObj.currentUser) {
+              flag = true;
+              if (userObj.cart) {
+                let prev = userObj.cart;
+                let updated = [...prev, ...cartItems];
+                userObj.cart = updated;
+                // localStorage.setItem('users', JSON.stringify(userObj));
+              } else {
+                userObj.cart = [...cartItems];
+              }
+            }
+            // console.log(userObj);
+          })
+          localStorage.setItem('users', JSON.stringify(Allusers));
+
+          if (!flag) {
+            alert('Login to add/access cart.');
+            return;
+          }
+        }
+        btn.innerHTML = 'Added';
+        setTimeout(() => {
+          btn.innerHTML = 'Add to cart';
+        }, 2500)
+        loading.style.display = 'none';
+      }
+      catch (err) {
+        alert('Something went wrong! \n ' + err);
+      }
+      loading.style.display = 'none';
+    })
+  })
+
   searchInput.addEventListener('keyup', (e) => {
-    e.stopPropagation();
     // console.log(e.target);
     console.log(e.target.value);
     let found = false;
@@ -804,7 +807,6 @@ fetchProducts().then((data) => {
   })
 
   searchBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
     loading.style.display = 'flex';
     console.log(e.target);
     searchSuggest.innerHTML = ``;
@@ -827,13 +829,59 @@ fetchProducts().then((data) => {
     if (!found || searchInput.value == '') {
       anybox.innerHTML = '<h1 style="color:grey; font-size:2.5rem">Opps! No products found!!</h1>'
     }
-    addToCartListener();
+    addToCartBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        try {
+          loading.style.display = 'flex';
+          console.log(e.target);
+          let cartItems = new Set();
+          let text = e.target.parentElement.innerHTML
+          cartItems.add(text.substring(25, 28));
+          if (!localStorage.getItem('users')) {
+            alert('Login to add/access cart.');
+            return;
+          }
+          else {
+            let flag = false;
+            let Allusers = JSON.parse(localStorage.getItem('users'));
+            Allusers.forEach((userObj) => {
+              if (userObj.currentUser) {
+                flag = true;
+                if (userObj.cart) {
+                  let prev = userObj.cart;
+                  let updated = [...prev, ...cartItems];
+                  userObj.cart = updated;
+                  // localStorage.setItem('users', JSON.stringify(userObj));
+                } else {
+                  userObj.cart = [...cartItems];
+                }
+              }
+              // console.log(userObj);
+            })
+            localStorage.setItem('users', JSON.stringify(Allusers));
+
+            if (!flag) {
+              alert('Login to add/access cart.');
+              return;
+            }
+          }
+          btn.innerHTML = 'Added';
+          setTimeout(() => {
+            btn.innerHTML = 'Add to cart';
+          }, 2500)
+          loading.style.display = 'none';
+        }
+        catch (err) {
+          alert('Something went wrong! \n ' + err);
+        }
+        loading.style.display = 'none';
+      })
+    })
     searchInput.value = '';
     loading.style.display = 'none';
   })
 
   cartLink.addEventListener('click', (e) => {
-    e.stopPropagation();
     console.log(e.target);
     let flag = false;
     if (!localStorage.getItem('users')) {
@@ -861,7 +909,6 @@ fetchProducts().then((data) => {
   })
 
   navLoginBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
     console.log(e.target);
     let flag = false;
     if (!localStorage.getItem('users')) {
@@ -889,7 +936,6 @@ fetchProducts().then((data) => {
   });
 
   navSignupBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
     console.log(e.target);
     let link = document.createElement('a');
     link.href = '../signup.html';
@@ -899,7 +945,6 @@ fetchProducts().then((data) => {
   });
 
   profileLink.addEventListener('click', (e) => {
-    e.stopPropagation();
     console.log(e.target);
     let flag = false;
     if (!localStorage.getItem('users')) {
