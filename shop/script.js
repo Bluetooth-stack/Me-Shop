@@ -345,7 +345,8 @@ fetchProducts().then((data) => {
     console.log(e.target);
 
     if (!checkedColor.length && !checkedsize.length && !checkedprice && !checkedrate) {
-      alert('Select the filters!')
+      alert('Select the filters!');
+      loading.style.display = 'none';
       return;
     }
     if (!checkedColor.length && !checkedsize.length && !checkedprice && !checkedrate) {
