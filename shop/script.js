@@ -34,6 +34,7 @@ function categoryFilter(data) {
   for (let i = 0; i < filterByCategory.length; i++) {
     let btn = filterByCategory[i];
     btn.addEventListener('click', (e) => {
+      e.stopPropagation();
       console.log(e.target);
 
       for (let j = 0; j < filterByCategory.length; j++) {
@@ -236,6 +237,7 @@ function renderData(obj, box) {
 function addToCartListener(){
   addToCartBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
+        e.stopPropagation();
         try {
           loading.style.display = 'flex';
           console.log(e.target);
@@ -296,6 +298,7 @@ fetchProducts().then((data) => {
   console.log(data);
   for (let i = 0; i < colorFilter.length; i++) {
     colorFilter[i].addEventListener('change', (e) => {
+      e.stopPropagation();
       console.log(e.target);
       if (e.target.checked) {
         checkedColor.push(e.target.value);
@@ -309,6 +312,7 @@ fetchProducts().then((data) => {
 
   for (let i = 0; i < sizeFilter.length; i++) {
     sizeFilter[i].addEventListener('change', (e) => {
+      e.stopPropagation();
       console.log(e.target);
       if (e.target.checked) {
         checkedsize.push(e.target.value);
@@ -322,6 +326,7 @@ fetchProducts().then((data) => {
 
   for (let i = 0; i < priceFilter.length; i++) {
     priceFilter[i].addEventListener('change', (e) => {
+      e.stopPropagation();
       console.log(e.target);
       if (e.target.checked) {
         checkedprice = e.target.value;
@@ -331,6 +336,7 @@ fetchProducts().then((data) => {
   }
 
   rateFilter.addEventListener('change', (e) => {
+    e.stopPropagation();
     console.log(e.target);
     if (rateFilter.value > 0) {
       checkedrate = rateFilter.value
@@ -343,6 +349,7 @@ fetchProducts().then((data) => {
 
 
   applyFilter.addEventListener('click', (e) => {
+    e.stopPropagation();
     loading.style.display = 'flex';
     console.log(e.target);
 
@@ -734,6 +741,7 @@ fetchProducts().then((data) => {
 
 
   clearFilterBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     console.log(e.target);
     loading.style.display = 'flex';
     const allcheck = document.querySelectorAll('main aside input[type="checkbox"]');
@@ -760,6 +768,7 @@ fetchProducts().then((data) => {
   })
 
   searchInput.addEventListener('keyup', (e) => {
+    e.stopPropagation();
     // console.log(e.target);
     console.log(e.target.value);
     let found = false;
@@ -789,6 +798,7 @@ fetchProducts().then((data) => {
   })
 
   searchBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     loading.style.display = 'flex';
     console.log(e.target);
     searchSuggest.innerHTML = ``;
@@ -817,6 +827,7 @@ fetchProducts().then((data) => {
   })
 
   cartLink.addEventListener('click', (e) => {
+    e.stopPropagation();
     console.log(e.target);
     let flag = false;
     if (!localStorage.getItem('users')) {
@@ -844,6 +855,7 @@ fetchProducts().then((data) => {
   })
 
   navLoginBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     console.log(e.target);
     let flag = false;
     if (!localStorage.getItem('users')) {
@@ -871,6 +883,7 @@ fetchProducts().then((data) => {
   });
 
   navSignupBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
     console.log(e.target);
     let link = document.createElement('a');
     link.href = '../signup.html';
@@ -880,6 +893,7 @@ fetchProducts().then((data) => {
   });
 
   profileLink.addEventListener('click', (e) => {
+    e.stopPropagation();
     console.log(e.target);
     let flag = false;
     if (!localStorage.getItem('users')) {
