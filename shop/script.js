@@ -665,7 +665,6 @@ fetchProducts().then((data) => {
     }
     loading.style.display = 'flex';
     rateFilter.value = 0;
-    generateSectionWiseData(data);
     checkedColor = [];
     checkedsize = [];
     checkedprice = undefined;
