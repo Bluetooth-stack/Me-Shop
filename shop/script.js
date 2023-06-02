@@ -655,9 +655,10 @@ fetchProducts().then((data) => {
         anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
       }
       addToCartListener()
+      return;
     }
 
-    else {
+//     else {
       anybox.innerHTML = ''
       if (checkedColor.length) {
         loading.style.display = 'flex';
@@ -711,7 +712,7 @@ fetchProducts().then((data) => {
         anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
       }
       addToCartListener();
-    }
+//     }
     
     
   })
