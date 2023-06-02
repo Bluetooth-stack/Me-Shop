@@ -507,7 +507,7 @@ fetchProducts().then((data) => {
       anybox.innerHTML = '';
       let filtered = [];
       filtered = data.filter(obj => {
-        if (obj.size) {
+        if (obj.sizes) {
           let foundS = obj.sizes.some((siz) => checkedsize.includes(siz));
           let priceRange = (obj.pRange === checkedprice);
           return (foundS && priceRange)
