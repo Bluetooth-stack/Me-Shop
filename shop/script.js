@@ -390,6 +390,7 @@ fetchProducts().then((data) => {
         anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
       }
       loading.style.display = 'none';
+      addToCartListener();
       return;
     }
 
