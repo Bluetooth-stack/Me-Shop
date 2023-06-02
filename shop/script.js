@@ -715,7 +715,13 @@ fetchProducts().then((data) => {
             renderData(obj, anybox)
           }
         })
+         if (anybox.innerHTML == '') {
+           loading.style.display = 'none';
+           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+        }
+        addToCartListener()
         loading.style.display = 'none';
+        return;
       }
 
       if (checkedrate) {
