@@ -290,6 +290,8 @@ fetchProducts().then((data) => {
   loading.style.display = 'flex';
   generateSectionWiseData(data);
   categoryFilter(data);
+  // general add-to-cart event listener
+  addToCartListener();
   loading.style.display = 'none';
   console.log(data);
   for (let i = 0; i < colorFilter.length; i++) {
@@ -671,10 +673,16 @@ fetchProducts().then((data) => {
             }
           }
         })
+         if (anybox.innerHTML == '') {
+           loading.style.display = 'none';
+           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+        }
+        addToCartListener()
         loading.style.display = 'none';
+        return;
       }
 
-      else if (checkedsize.length) {
+      if (checkedsize.length) {
         loading.style.display = 'flex';
         data.forEach(obj => {
           if (obj.sizes) {
@@ -684,10 +692,16 @@ fetchProducts().then((data) => {
             }
           }
         })
+        if (anybox.innerHTML == '') {
+           loading.style.display = 'none';
+           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+        }
+        addToCartListener()
         loading.style.display = 'none';
+        return;
       }
 
-      else if (checkedprice) {
+      if (checkedprice) {
         loading.style.display = 'flex';
         data.forEach(obj => {
           if ((obj.pRange === checkedprice)) {
@@ -697,7 +711,7 @@ fetchProducts().then((data) => {
         loading.style.display = 'none';
       }
 
-      else if (checkedrate) {
+      if (checkedrate) {
         loading.style.display = 'flex';
         data.forEach(obj => {
           let numRate = parseInt(obj.rating.rate);
@@ -705,16 +719,17 @@ fetchProducts().then((data) => {
             renderData(obj, anybox)
           }
         })
+        if (anybox.innerHTML == '') {
+           loading.style.display = 'none';
+           anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
+        }
+        addToCartListener()
         loading.style.display = 'none';
+        return;
       }
-      if (anybox.innerHTML == '') {
-        loading.style.display = 'none';
-        anybox.innerHTML = '<h1 style="color:grey">No items found!!</h1>'
-      }
-      addToCartListener();
+    
 //     }
-    
-    
+
   })
 
 
@@ -743,9 +758,6 @@ fetchProducts().then((data) => {
     anybox.style.display = 'none';
     loading.style.display = 'none';
   })
-  
-  // general add-to-cart event listener
-  addToCartListener();
 
   searchInput.addEventListener('keyup', (e) => {
     // console.log(e.target);
