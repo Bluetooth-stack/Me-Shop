@@ -686,6 +686,7 @@ fetchProducts().then((data) => {
         let text = e.target.parentElement.innerHTML
         cartItems.add(text.substring(25, 28));
         if (!localStorage.getItem('users')) {
+          loading.style.display = 'none';
           alert('Login to add/access cart.');
           return;
         }
@@ -784,6 +785,7 @@ fetchProducts().then((data) => {
           let text = e.target.parentElement.innerHTML
           cartItems.add(text.substring(25, 28));
           if (!localStorage.getItem('users')) {
+            loading.style.display = 'flex';
             alert('Login to add/access cart.');
             return;
           }
