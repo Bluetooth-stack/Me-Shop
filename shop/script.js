@@ -63,38 +63,88 @@ function categoryFilter(data) {
           if (obj.category == "men's clothing")
             renderData(obj, anybox);
         })
-        return;
+        // return;
       }
 
-      if (btn.innerHTML == 'Womens') {
+      else if (btn.innerHTML == 'Womens') {
         anybox.innerHTML = '';
         data.forEach((obj) => {
           if (obj.category == "women's clothing")
             renderData(obj, anybox);
         })
-        return;
+        // return;
       }
 
-      if (btn.innerHTML == 'Jewellery') {
+      else if (btn.innerHTML == 'Jewellery') {
         anybox.innerHTML = '';
         data.forEach((obj) => {
           if (obj.category == "jewelery")
             renderData(obj, anybox);
         })
-        return;
+        // return;
       }
 
-      if (btn.innerHTML == 'Electronics') {
+      else if (btn.innerHTML == 'Electronics') {
         anybox.innerHTML = '';
         data.forEach((obj) => {
           if (obj.category == "electronics")
             renderData(obj, anybox);
         })
-        return;
+        // return;
       }
+
+      addToCartBtns.forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          try {
+            loading.style.display = 'flex';
+            console.log(e.target);
+            let cartItems = new Set();
+            let text = e.target.parentElement.innerHTML
+            cartItems.add(text.substring(25, 28));
+            if (!localStorage.getItem('users')) {
+              alert('Login to add/access cart.');
+              return;
+            }
+            else {
+              let flag = false;
+              let Allusers = JSON.parse(localStorage.getItem('users'));
+              Allusers.forEach((userObj) => {
+                if (userObj.currentUser) {
+                  flag = true;
+                  if (userObj.cart) {
+                    let prev = userObj.cart;
+                    let updated = [...prev, ...cartItems];
+                    userObj.cart = updated;
+                    // localStorage.setItem('users', JSON.stringify(userObj));
+                  } else {
+                    userObj.cart = [...cartItems];
+                  }
+                }
+                // console.log(userObj);
+              })
+              localStorage.setItem('users', JSON.stringify(Allusers));
+    
+              if (!flag) {
+                alert('Login to add/access cart.');
+                return;
+              }
+            }
+            btn.innerHTML = 'Added';
+            setTimeout(() => {
+              btn.innerHTML = 'Add to cart';
+            }, 2500)
+            loading.style.display = 'none';
+          }
+          catch (err) {
+            alert('Something went wrong! \n ' + err);
+          }
+          loading.style.display = 'none';
+        })
+      })
 
     })
   }
+  
 }
 
 
