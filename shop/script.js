@@ -287,7 +287,67 @@ function addToCartListener(){
 }
 
 
-function applyingFilter(data){
+
+fetchProducts().then((data) => {
+  loading.style.display = 'flex';
+  generateSectionWiseData(data);
+  categoryFilter(data);
+  // general add-to-cart event listener
+  addToCartListener();
+  loading.style.display = 'none';
+  console.log(data);
+  for (let i = 0; i < colorFilter.length; i++) {
+    colorFilter[i].addEventListener('change', (e) => {
+      e.stopPropagation();
+      console.log(e.target);
+      if (e.target.checked) {
+        checkedColor.push(e.target.value);
+      }
+      else if (!e.target.checked) {
+        checkedColor = checkedColor.filter(c => c !== e.target.value);
+      }
+      console.log(checkedColor);
+    })
+  }
+
+  for (let i = 0; i < sizeFilter.length; i++) {
+    sizeFilter[i].addEventListener('change', (e) => {
+      e.stopPropagation();
+      console.log(e.target);
+      if (e.target.checked) {
+        checkedsize.push(e.target.value);
+      }
+      else if (!e.target.checked) {
+        checkedsize = checkedsize.filter(s => s !== e.target.value);
+      }
+      console.log(checkedsize);
+    })
+  }
+
+  for (let i = 0; i < priceFilter.length; i++) {
+    priceFilter[i].addEventListener('change', (e) => {
+      e.stopPropagation();
+      console.log(e.target);
+      if (e.target.checked) {
+        checkedprice = e.target.value;
+      }
+      console.log(checkedprice);
+    })
+  }
+
+  rateFilter.addEventListener('change', (e) => {
+    e.stopPropagation();
+    console.log(e.target);
+    if (rateFilter.value > 0) {
+      checkedrate = rateFilter.value
+    }
+    else {
+      checkedrate = undefined;
+    }
+    console.log(checkedrate);
+  })
+
+//filters
   applyFilter.addEventListener('click', (e) => {
     e.stopPropagation();
     loading.style.display = 'flex';
@@ -684,71 +744,6 @@ function applyingFilter(data){
 //     }
 
   })
-}
-
-
-
-fetchProducts().then((data) => {
-  loading.style.display = 'flex';
-  generateSectionWiseData(data);
-  categoryFilter(data);
-  // general add-to-cart event listener
-  addToCartListener();
-  loading.style.display = 'none';
-  console.log(data);
-  for (let i = 0; i < colorFilter.length; i++) {
-    colorFilter[i].addEventListener('change', (e) => {
-      e.stopPropagation();
-      console.log(e.target);
-      if (e.target.checked) {
-        checkedColor.push(e.target.value);
-      }
-      else if (!e.target.checked) {
-        checkedColor = checkedColor.filter(c => c !== e.target.value);
-      }
-      console.log(checkedColor);
-    })
-  }
-
-  for (let i = 0; i < sizeFilter.length; i++) {
-    sizeFilter[i].addEventListener('change', (e) => {
-      e.stopPropagation();
-      console.log(e.target);
-      if (e.target.checked) {
-        checkedsize.push(e.target.value);
-      }
-      else if (!e.target.checked) {
-        checkedsize = checkedsize.filter(s => s !== e.target.value);
-      }
-      console.log(checkedsize);
-    })
-  }
-
-  for (let i = 0; i < priceFilter.length; i++) {
-    priceFilter[i].addEventListener('change', (e) => {
-      e.stopPropagation();
-      console.log(e.target);
-      if (e.target.checked) {
-        checkedprice = e.target.value;
-      }
-      console.log(checkedprice);
-    })
-  }
-
-  rateFilter.addEventListener('change', (e) => {
-    e.stopPropagation();
-    console.log(e.target);
-    if (rateFilter.value > 0) {
-      checkedrate = rateFilter.value
-    }
-    else {
-      checkedrate = undefined;
-    }
-    console.log(checkedrate);
-  })
-
-//filters
-  applyingFilter(data);
 
 
   clearFilterBtn.addEventListener('click', (e) => {
