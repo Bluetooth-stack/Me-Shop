@@ -118,6 +118,8 @@ cartLink.addEventListener('click', (e) => {
         flag = true;
         if (userObj.cart) {
           cartLink.href = './cart/index.html'
+        }else{
+          alert(`${userObj.fname}, Your cart is empty! \n Visit shop to add products`);
         }
       }
     })
