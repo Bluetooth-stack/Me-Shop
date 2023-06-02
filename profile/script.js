@@ -68,6 +68,7 @@ changePass.addEventListener('click', (e) => {
     let flag = true;
     if(oldPass.value=='' || newPass.value=='' || confirmPass.value==''){
         errorChange.innerHTML = 'All fields are mandetory!'
+        loading.style.display = 'none';
         return;
     }
     if (localStorage.getItem('users')) {
@@ -79,12 +80,14 @@ changePass.addEventListener('click', (e) => {
                         flag = false;
                         newPass.focus();
                         errorChange.innerHTML = 'Passwords length must be greater than 8!';
+                        loading.style.display = 'none';
                         return;
                     }
                     if (newPass.value !== confirmPass.value) {
                         flag = false;
                         confirmPass.focus();
                         errorChange.innerHTML = 'Passwords does not match!';
+                        loading.style.display = 'none';
                         return;
                     }
                     else {
@@ -97,17 +100,19 @@ changePass.addEventListener('click', (e) => {
                     flag = false;
                     oldPass.focus();
                     errorChange.innerHTML = 'Old_Password does not match!';
+                    loading.style.display = 'none';
                     return;
                 }
             }
             updatedUserArray.push(user);
         });
         if(!flag){
+            loading.style.display = 'none';
             return;
         }
     }
     localStorage.setItem('users', JSON.stringify(updatedUserArray));
-    loading.style.display = 'flex';
+    loading.style.display = 'none';
 
 })
 setTimeout(() => {
