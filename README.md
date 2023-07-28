@@ -40,6 +40,9 @@ It has most of the features that are available in any basic e-commerce website
 
 
 
+![Screenshot 2023-07-28 160106](https://github.com/Bluetooth-stack/Me-Shop/assets/80689111/35d03105-63ec-4b9c-b044-354fbc0f1f26)
+
+
 ![Screenshot 2023-07-28 151337](https://github.com/Bluetooth-stack/Me-Shop/assets/80689111/0f654f6d-f1ed-46b4-94b2-79d7e3fd1bff)
 
 
